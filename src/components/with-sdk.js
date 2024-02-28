@@ -19,7 +19,7 @@ const mumbaiChainConfig = {
 }
 
 const sdk = new CredenzaSDK({
-  clientId: '65de0c3193ef867874907a4f',
+  clientId: process.env.REACT_APP_CREDENZA_CLIENT_ID,
   env: 'staging', // remove for prod
   extensions: [
     new SuiExtension({ suiNetwork: SuiExtension.SUI_NETWORK.DEVNET }),

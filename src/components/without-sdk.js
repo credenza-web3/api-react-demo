@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode'
 
 function buildCredenzaAuthUrl() {
   const url = new URL('https://accounts.staging.credenza3.com/oauth2/authorize')
-  url.searchParams.append('client_id', '65de0c3193ef867874907a4f')
+  url.searchParams.append('client_id', process.env.REACT_APP_CREDENZA_CLIENT_ID)
   url.searchParams.append('response_type', 'token')
   url.searchParams.append('scope', 'profile.write blockchain.evm blockchain.sui')
   url.searchParams.append('state', 'replace_with_state')
