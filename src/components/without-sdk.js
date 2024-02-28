@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 
+const NONCE = 'replace_with_nonce'
+const STATE = 'replace_with_state'
+
 function buildCredenzaAuthUrl() {
   const url = new URL('https://accounts.staging.credenza3.com/oauth2/authorize')
   url.searchParams.append('client_id', process.env.REACT_APP_CREDENZA_CLIENT_ID)
   url.searchParams.append('response_type', 'token')
   url.searchParams.append('scope', 'profile.write blockchain.evm blockchain.sui')
-  url.searchParams.append('state', 'replace_with_state')
+  url.searchParams.append('state', STATE)
   url.searchParams.append('redirect_uri', window.location.origin + '/without-sdk')
-  url.searchParams.append('nonce', 'replace_with_nonce')
+  url.searchParams.append('nonce', NONCE)
   url.searchParams.append('credenza_session_length_seconds', 60 * 60 * 24)
   return url.toString()
 }
@@ -70,10 +73,10 @@ export function WithoutSdk() {
 
     if (!hashObj.access_token) throw new Error('Invalid access token')  
 
-    if (hashObj.state !== 'replace_with_state') return
+    if (hashObj.state !== STATE) return
 
     const decodedJwt = jwtDecode(hashObj.access_token)
-    if (decodedJwt.nonce !== 'replace_with_nonce') return
+    if (decodedJwt.nonce !== NONCE) return
 
     if (window.history) {
       window.history.replaceState(null, document.title, window.location.pathname + window.location.search)
