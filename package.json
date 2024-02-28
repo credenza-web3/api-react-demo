@@ -1,11 +1,17 @@
 {
-  "name": "blues-no-sdk",
+  "name": "api-reack-demo",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@credenza3/web-sdk": "^0.0.8",
+    "@credenza3/web-sdk-ext-account": "latest",
+    "@credenza3/web-sdk-ext-evm": "latest",
+    "@credenza3/web-sdk-ext-oauth": "latest",
+    "@credenza3/web-sdk-ext-sui": "latest",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
