@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 
-import { CredenzaSDK } from '@credenza3/web-sdk'
-import { OAuthExtension } from '@credenza3/web-sdk-ext-oauth'
-import { AccountExtension } from '@credenza3/web-sdk-ext-account'
-import { EvmExtension } from '@credenza3/web-sdk-ext-evm'
-import { SuiExtension } from '@credenza3/web-sdk-ext-sui'
+import { CredenzaSDK } from '@credenza3/core-web'
+import { OAuthExtension } from '@credenza3/core-web-oauth-ext'
+import { AccountExtension } from '@credenza3/core-web-account-ext'
+import { EvmExtension } from '@credenza3/core-web-evm-ext'
+import { SuiExtension } from '@credenza3/core-web-sui-ext'
 
 const mumbaiChainConfig = {
   chainId: '0x13881',
@@ -30,6 +30,7 @@ const sdk = new CredenzaSDK({
 })
 
 export function WithSdk() {
+  const [email, setEmail] = useState('')
   const [isCredenzaLoggedIn, setIsCredenzaLoggedIn] = useState(false)
   const [suiAddress, setSuiAddress] = useState()
   const [evmAddress, setEvmAddress] = useState()
@@ -40,6 +41,7 @@ export function WithSdk() {
       redirectUrl: window.location.origin + '/with-sdk',
       type: OAuthExtension.LOGIN_TYPE.PASSWORDLESS,
       passwordless_type: OAuthExtension.PASSWORDLESS_LOGIN_TYPE.EMAIL,
+      ...(email ? {force_email: email.trim()} : {})
     })
   }
 
@@ -77,7 +79,11 @@ export function WithSdk() {
   return (
     <div>
       <div>With Sdk:</div>
-      {!isCredenzaLoggedIn && <button onClick={credenzaAuthorize}>Authorize with Credenza</button>}
+      {!isCredenzaLoggedIn && (<>
+        <input type="email" name="email" style={{minWidth: '400px'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+        <br />
+        <button onClick={credenzaAuthorize}>Authorize with Credenza</button>
+      </>)}
       {evmAddress && <div>Evm Address: {evmAddress}</div>}
       {suiAddress && <div>Sui Address: {suiAddress}</div>}
     </div>
