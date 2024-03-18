@@ -40,8 +40,8 @@ export function WithSdk() {
       scope: 'profile.write blockchain.evm blockchain.sui',
       redirectUrl: window.location.origin + '/with-sdk',
       type: OAuthExtension.LOGIN_TYPE.PASSWORDLESS,
-      passwordless_type: OAuthExtension.PASSWORDLESS_LOGIN_TYPE.EMAIL,
-      ...(email ? {force_email: email.trim()} : {})
+      passwordlessType: OAuthExtension.PASSWORDLESS_LOGIN_TYPE.EMAIL,
+      ...(email ? {forceEmail: email.trim()} : {})
     })
   }
 
