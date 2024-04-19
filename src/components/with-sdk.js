@@ -104,8 +104,11 @@ export function WithSdk() {
   }
 
   async function addLoyaltyContractPoints() {
+    const recipientAddress = evmAddress
+    const amount = 1
+    const eventId = 1
     const loyaltyContract = await getContract("LedgerContract", "0xef998e788d3375f944ac6d64a409aa5cb9d1ad21")
-    const tx = await loyaltyContract.addPoints(evmAddress, 1, 1)
+    const tx = await loyaltyContract.addPoints(recipientAddress, amount, eventId)
     await tx.wait()
     requestLoyaltyPoints(evmAddress)
   }
@@ -123,6 +126,7 @@ export function WithSdk() {
   };
 
   async function getBalanceTokens(address) {
+    
     const erc1155Contract = await getContract("CredenzaERC1155Contract", "0x4ade9fe4b34add155bc2479a55d50b2624d6b86a")
     const isBalance = await erc1155Contract.balanceOf(address, 2)
 
@@ -130,24 +134,34 @@ export function WithSdk() {
   }
 
   async function transferTokens() {
+    const addressFrom = evmAddress
+    const addressTo = '0x3251679Cf91EF3D5ca7b2168510EAb49e5D9Ef59'
+    const tokenId = 2
+    const amount = 1
+    const data = ethers.ZeroHash
+
     const erc1155Contract = await getContract("CredenzaERC1155Contract", "0x4ade9fe4b34add155bc2479a55d50b2624d6b86a")
-    const tx = await erc1155Contract.safeTransferFrom(evmAddress, '0x3251679Cf91EF3D5ca7b2168510EAb49e5D9Ef59', 2, 1, ethers.ZeroHash)
+    const tx = await erc1155Contract.safeTransferFrom(addressFrom, addressTo, tokenId, amount, data)
     await tx.wait()
     getBalanceTokens(evmAddress)
   }
 
   async function buyToken() {
+    const tokenId = 2
+    const requestedAmount = 1
+    const recipient = evmAddress
+
     const sellable1155Contract = await getContract("CredenzaERC1155Contract", "0x42e2e700e061b74c39adda516208fdcfebff3cd3")
-    const priceToken = await sellable1155Contract.getPriceToken(1).then((result) => Number(result))
+    const priceToken = await sellable1155Contract.getPriceToken(tokenId).then((result) => Number(result))
 
     const credContract = await getContract("CredenzaToken", "0x5619A31C5776c50e4A3f6DD3E07be13f4efa211C")
     const approveTx = await credContract.approve('0x42e2e700e061b74c39adda516208fdcfebff3cd3', priceToken)
     await approveTx.wait()
 
-    const tx = await sellable1155Contract['buyWithToken(uint256,uint256,address)'](1, 1, evmAddress);
+    const tx = await sellable1155Contract['buyWithToken(uint256,uint256,address)'](tokenId, requestedAmount, recipient);
 
     await tx.wait()
-    getBalanceTokens(evmAddress)
+    getBalanceTokens("0x42e2e700e061b74c39adda516208fdcfebff3cd3")
   }
 
   return (
