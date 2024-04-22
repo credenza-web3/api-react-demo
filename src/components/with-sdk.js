@@ -109,7 +109,7 @@ export function WithSdk() {
     const recipientAddress = evmAddress
     const amount = 1
     const eventId = 1
-    
+
     const loyaltyContract = await getContract("LedgerContract", "0xef998e788d3375f944ac6d64a409aa5cb9d1ad21")
     const tx = await loyaltyContract.addPoints(recipientAddress, amount, eventId)
     await tx.wait()
@@ -136,9 +136,9 @@ export function WithSdk() {
     setTokenBalance(String(isBalance));
   }
 
-  async function getBalanceTokensPurchase(address) {  
+  async function getBalanceTokensPurchase(address) {
     const tokenId = 2
-  
+
     const erc1155Contract = await getContract("CredenzaERC1155Contract", "0x42e2e700e061b74c39adda516208fdcfebff3cd3")
     const isBalance = await erc1155Contract.balanceOf(address, tokenId)
     setTokenBalancePurchase(String(isBalance));
@@ -182,7 +182,7 @@ export function WithSdk() {
       <div>With Sdk:</div>
       <br />
       {!isCredenzaLoggedIn && (<>
-        <input type="email" name="email" style={{ minWidth: '400px' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="email" name="email" style={{ minWidth: '320px' }} value={email} onChange={(e) => setEmail(e.target.value)} />
         <br />
         <button onClick={credenzaAuthorize}>Authorize with Credenza</button>
       </>)}
