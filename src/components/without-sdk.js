@@ -21,7 +21,7 @@ export function WithoutSdk() {
   const [evmAddress, setEvmAddress] = useState()
   const [suiAddress, setSuiAddress] = useState()
 
-  function credenzaAuthorize () {
+  function credenzaAuthorize() {
     window.location.href = buildCredenzaAuthUrl()
   }
 
@@ -45,7 +45,7 @@ export function WithoutSdk() {
     setSuiAddress(data.address)
   }
 
-  async function updateProfile(accessToken){
+  async function updateProfile(accessToken) {
     await fetch('https://accounts.staging.credenza3.com/accounts/me', {
       method: 'PATCH',
       headers: {
@@ -71,7 +71,7 @@ export function WithoutSdk() {
         return acc
       }, {})
 
-    if (!hashObj.access_token) throw new Error('Invalid access token')  
+    if (!hashObj.access_token) throw new Error('Invalid access token')
 
     if (hashObj.state !== STATE) return
 
@@ -98,6 +98,7 @@ export function WithoutSdk() {
   return (
     <div>
       <div>WithoutSdk:</div>
+      <br/>
       {!credenzaAccessToken && <button onClick={credenzaAuthorize}>Authorize with Credenza</button>}
       {evmAddress && <div>Evm Address: {evmAddress}</div>}
       {suiAddress && <div>Sui Address: {suiAddress}</div>}
