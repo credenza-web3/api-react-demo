@@ -15,4 +15,5 @@ code {
 header {
   display: flex;
   margin: 40px;
+  gap: 20px
 }
