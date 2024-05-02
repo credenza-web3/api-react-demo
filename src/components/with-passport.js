@@ -118,7 +118,7 @@ export function WithPassport() {
     const tokenId = purchaseTokenId
     const amount = 1
     await passport.openUI(Passport.pages.PAYMENT, {
-      title: "buyToken",
+      title: "Buy Token",
       tokens: [{ contractAddress, tokenId, amount }]
     });
   }
