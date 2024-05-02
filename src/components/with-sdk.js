@@ -143,7 +143,7 @@ export function WithSdk() {
     const isBalance = await erc1155Contract.balanceOf(address, tokenId)
     setTokenBalancePurchase(String(isBalance));
   }
-  
+
 
   async function transferTokens() {
     const addressFrom = evmAddress
@@ -179,7 +179,7 @@ export function WithSdk() {
 
   return (
     <div>
-      <div>With Sdk:</div>
+      <div className="font-bold">With Sdk:</div>
       <br />
       {!isCredenzaLoggedIn && (<>
         <input type="email" name="email" style={{ minWidth: '320px' }} value={email} onChange={(e) => setEmail(e.target.value)} />
