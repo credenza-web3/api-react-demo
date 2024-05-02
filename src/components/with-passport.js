@@ -2,8 +2,6 @@ import { Passport } from "@credenza3/passport-evm";
 import { useEffect, useState } from 'react'
 import { getCredenzaContract } from '@credenza-web3/contracts-lib';
 
-
-
 let passport = new Passport({
   chainId: '80002',
   clientId: "65ae84e382b59c55c07cb5d9",
@@ -21,25 +19,6 @@ let passport = new Passport({
   },
 });
 
-const initPassport = async () => {
-  const passportPromise = passport.init()
-  passport.on('LOGIN', async function () {
-    await passportPromise
-  })
-  await passportPromise;
-  passport.showNavigation(
-    { bottom: "0", right: "0" },
-    {
-      minimization: {
-        toggler: {
-          enabled: true,
-        },
-      },
-    }
-  );
-  console.log('passport', passport)
-};
-
 export function WithPassport() {
   const [evmAddress, setEvmAddress] = useState()
   const [membership, setMembership] = useState()
@@ -50,28 +29,56 @@ export function WithPassport() {
   const [purchaseTokenId, setPurchaseTokenId] = useState('1')
   const [transferTokensContractAddress, setTransferTokensContractAddress] = useState('0x031d3E3D026480C938cC4AC4605EcCc57910F5CB')
   const [transferTokensRecipient, setTransferTokensRecipient] = useState('0x95777D54851fac3F48f739E5fBf65A42ad2777B8')
+  const [isLoggedIn, setIsLoggedIn] = useState(null)
+
+  async function initPassport() {
+    const passportPromise = passport.init()
+    passport.on('LOGIN', async function () {
+      await passportPromise
+      setIsLoggedIn(true)
+    })
+    passport.on('LOGOUT', function () { setIsLoggedIn(false) })
+    await passportPromise;
+    setIsLoggedIn(passport.isLoggedIn)
+    passport.showNavigation(
+      { bottom: "0", right: "0" },
+      {
+        minimization: {
+          toggler: {
+            enabled: true,
+          },
+        },
+      }
+    );
+    console.log('passport', passport)
+  };
 
   useEffect(() => {
     const initialize = async () => {
       await initPassport();
-      if (passport.isLoggedIn) {
+    };
+    initialize();
+
+  }, []);
+
+  useEffect(() => {
+    const initialize = async () => {
+      if (isLoggedIn === null) return
+      if (isLoggedIn) {
         getEvmAddress();
         getBalanceTokens();
       } else {
         await passport.login("OAUTH")
       }
     };
-
     initialize();
-
-  }, []);
+  }, [isLoggedIn]);
 
   async function getEvmAddress() {
     const signer = await passport.provider.getSigner();
     const address = await signer.getAddress();
     setEvmAddress(address)
     isMembership(address)
-
   }
 
   async function requestLoyaltyPoints() {
@@ -115,7 +122,6 @@ export function WithPassport() {
       tokens: [{ contractAddress, tokenId, amount }]
     });
   }
-
   return (
     <div>
       <div className="font-bold">With Passport:</div>
@@ -154,75 +160,76 @@ export function WithPassport() {
       <br />
       {tokenBalance && (
         <div>
-          <div className="font-bold">Token Balance:{tokenBalance.length > 0 || '0'}</div>
-          {tokenBalance.map((token, index) => (
-            <div>
-              <div key={index}>Token {index + 1}:</div>
-              <div>amount:{token.amount} </div>
-              <div>tokenAddress:{token.tokenAddress}</div>
+          <div>
+            <div className="font-bold">Token Balance:{tokenBalance.length > 0 || '0'}</div>
+            {tokenBalance.map((token, index) => (
+              <div>
+                <div key={index}>Token {index + 1}:</div>
+                <div>amount:{token.amount} </div>
+                <div>tokenAddress:{token.tokenAddress}</div>
+                <br />
+              </div>
+            ))}
+          </div>
+          <div>
+            <div className="font-bold">Transfer Token</div>
+            <label>
+              Contract Address
               <br />
-            </div>
-          ))}
+              <input
+                type="text"
+                style={{ minWidth: '320px' }}
+                value={transferTokensContractAddress}
+                onChange={(e) => setTransferTokensContractAddress(e.target.value)}
+                placeholder="Contract Address"
+              />
+            </label>
+            <br />
+            <label>
+              Recipient Address
+              <br />
+              <input
+                type="text"
+                style={{ minWidth: '320px' }}
+                value={transferTokensRecipient}
+                onChange={(e) => setTransferTokensRecipient(e.target.value)}
+                placeholder="TokenId"
+              />
+            </label>
+            <br />
+            <button onClick={transferTokens}>TransferToken</button>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div className="font-bold">Buy Token</div>
+            <label>
+              Contract Address
+              <br />
+              <input
+                type="text"
+                style={{ minWidth: '320px' }}
+                value={purchaseContractAddress}
+                onChange={(e) => setPurchaseContractAddress(e.target.value)}
+                placeholder="Contract Address"
+              />
+            </label>
+            <br />
+            <label>
+              Token Id
+              <br />
+              <input
+                type="text"
+                style={{ minWidth: '160px' }}
+                value={purchaseTokenId}
+                onChange={(e) => setPurchaseTokenId(e.target.value)}
+                placeholder="TokenId"
+              />
+            </label>
+            <button onClick={buyToken}>Buy Token</button>
+          </div>
         </div>
       )}
-      {tokenBalance && <div>
-        <div className="font-bold">Transfer Token</div>
-        <label>
-          Contract Address
-          <br />
-          <input
-            type="text"
-            style={{ minWidth: '320px' }}
-            value={transferTokensContractAddress}
-            onChange={(e) => setTransferTokensContractAddress(e.target.value)}
-            placeholder="Contract Address"
-          />
-        </label>
-        <br />
-        <label>
-          Recipient Address
-          <br />
-          <input
-            type="text"
-            style={{ minWidth: '320px' }}
-            value={transferTokensRecipient}
-            onChange={(e) => setTransferTokensRecipient(e.target.value)}
-            placeholder="TokenId"
-          />
-        </label>
-        <br />
-        <button onClick={transferTokens}>TransferToken</button>
-      </div>}
-      <br />
-      <br />
-      {tokenBalance && <div>
-        <div className="font-bold">Buy Token</div>
-        <label>
-          Contract Address
-          <br />
-          <input
-            type="text"
-            style={{ minWidth: '320px' }}
-            value={purchaseContractAddress}
-            onChange={(e) => setPurchaseContractAddress(e.target.value)}
-            placeholder="Contract Address"
-          />
-        </label>
-        <br />
-        <label>
-          Token Id
-          <br />
-          <input
-            type="text"
-            style={{ minWidth: '160px' }}
-            value={purchaseTokenId}
-            onChange={(e) => setPurchaseTokenId(e.target.value)}
-            placeholder="TokenId"
-          />
-        </label>
-        <button onClick={buyToken}>Buy Token</button>
-      </div>
-      }
     </div>
   );
 }
