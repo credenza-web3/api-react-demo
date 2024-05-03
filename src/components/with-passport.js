@@ -2,23 +2,7 @@ import { Passport } from "@credenza3/passport-evm";
 import { useEffect, useState } from 'react'
 import { getCredenzaContract } from '@credenza-web3/contracts-lib';
 
-let passport = new Passport({
-  chainId: '80002',
-  clientId: "65ae84e382b59c55c07cb5d9",
-  config: {
-    content: {
-      cloak: false,
-    },
-    auth: {
-      extendedRegistration: true,
-    },
-    nav: {
-      theme: Passport.themes.WHITE,
-      direction: Passport.navDirections.TOP,
-    },
-  },
-});
-
+let passport
 export function WithPassport() {
   const [evmAddress, setEvmAddress] = useState()
   const [membership, setMembership] = useState()
@@ -30,8 +14,25 @@ export function WithPassport() {
   const [transferTokensContractAddress, setTransferTokensContractAddress] = useState('0x031d3E3D026480C938cC4AC4605EcCc57910F5CB')
   const [transferTokensRecipient, setTransferTokensRecipient] = useState('0x95777D54851fac3F48f739E5fBf65A42ad2777B8')
   const [isLoggedIn, setIsLoggedIn] = useState(null)
-
+  const [selectedChainId, setSelectedChainId] = useState('80002')
+  
   async function initPassport() {
+    passport = new Passport({
+      chainId: selectedChainId,
+      clientId: "65ae84e382b59c55c07cb5d9",
+      config: {
+        content: {
+          cloak: false,
+        },
+        auth: {
+          extendedRegistration: true,
+        },
+        nav: {
+          theme: Passport.themes.WHITE,
+          direction: Passport.navDirections.TOP,
+        },
+      },
+    });
     const passportPromise = passport.init()
     passport.on('LOGIN', async function () {
       await passportPromise
@@ -51,15 +52,16 @@ export function WithPassport() {
       }
     );
     console.log('passport', passport)
+    console.log('selectedChainId', selectedChainId)
   };
-
+  
   useEffect(() => {
     const initialize = async () => {
       await initPassport();
     };
     initialize();
 
-  }, []);
+  }, [selectedChainId]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -72,7 +74,7 @@ export function WithPassport() {
       }
     };
     initialize();
-  }, [isLoggedIn]);
+  }, [isLoggedIn, selectedChainId]);
 
   async function getEvmAddress() {
     const signer = await passport.provider.getSigner();
@@ -125,6 +127,22 @@ export function WithPassport() {
   return (
     <div>
       <div className="font-bold">With Passport:</div>
+      <br />
+      <label>
+        <div>
+          <span className="font-bold">Select СhainId</span>
+        </div>
+        <select value={selectedChainId} onChange={(event) => {
+          setSelectedChainId(event.target.value);
+        }}>
+          {Object.entries(Passport.chains || {}).map(([key, value], id) => (
+            <option key={key} value={value} id={id}>
+              {key} ({value})
+            </option>
+          ))}
+        </select>
+      </label>
+      <br />
       <br />
       {evmAddress && <div className="font-bold">Evm Address: {evmAddress}</div>}
       <br />
