@@ -181,8 +181,8 @@ export function WithPassport() {
           <div>
             <div className="font-bold">Token Balance:{tokenBalance.length > 0 || '0'}</div>
             {tokenBalance.map((token, index) => (
-              <div>
-                <div key={index}>Token {index + 1}:</div>
+              <div key={index}>
+                <div >Token {index + 1}:</div>
                 <div>amount:{token.amount} </div>
                 <div>tokenAddress:{token.tokenAddress}</div>
                 <br />
