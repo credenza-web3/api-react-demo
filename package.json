@@ -9,7 +9,7 @@
     "@credenza3/core-web-evm-ext": "latest",
     "@credenza3/core-web-oauth-ext": "latest",
     "@credenza3/core-web-sui-ext": "latest",
-    "@credenza3/passport-evm": "^0.0.4",
+    "@credenza3/passport-evm": "^0.0.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
